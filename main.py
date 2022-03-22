@@ -91,7 +91,7 @@ def tracker_logs(tracker_id):
     logs = Logs.query.filter_by(tracker_id=tracker_id).all()
     tracker = Tracker.query.filter_by(id=tracker_id).first()
     logs_plot(tracker.type, logs)
-    return render_template("logs.html", logs=logs, n=len(logs), tracker_id=tracker_id)
+    return render_template("logs.html", logs=logs, n=len(logs), tracker_id=tracker_id, user_id=tracker.user_id)
 
 
 @app.route("/tracker/<string:tracker_id>/log_create", methods=["GET", "POST"])
