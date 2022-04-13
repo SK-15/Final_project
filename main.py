@@ -64,10 +64,14 @@ def tracker_add(user_id):
 @app.route("/tracker/<string:tracker_id>/delete",methods=["GET","POST"])
 def tracker_delete(tracker_id):
     tracker = Tracker.query.filter_by(id=tracker_id).first()
-    user_id = str(tracker.user_id)
-    db.session.delete(tracker)
-    db.session.commit()
-    return redirect("/user/"+user_id+"/tracker")
+    log = Logs.query.filter_by(tracker_id=tracker_id).first()
+    if log:
+        return "Please delete all the logs for this tracker first"
+    else:
+        user_id = str(tracker.user_id)
+        db.session.delete(tracker)
+        db.session.commit()
+        return redirect("/user/"+user_id+"/tracker")
 
 
 @app.route("/tracker/<string:tracker_id>/update", methods=["GET", "POST"])
@@ -81,9 +85,6 @@ def tracker_update(tracker_id):
         return redirect("/user/"+user_id+"/tracker")
     tracker = Tracker.query.filter_by(id=tracker_id).first()
     return render_template('tracker_update.html', tracker=tracker, tracker_id=tracker_id)
-
-
-
 
 
 @app.route("/tracker/<string:tracker_id>/log",methods=["GET", "POST"])
@@ -130,9 +131,13 @@ def log_delete(log_id):
 def log_update(log_id):
     if request.method == "POST":
         log = Logs.query.filter_by(id=log_id).first()
+        tracker = Tracker.query.filter_by(id=log.tracker_id).first()
         tracker_id = str(log.tracker_id)
         log.note = request.form["note"]
-        log.value = request.form["value"]
+        if tracker.type == '1':
+            log.value = request.form['ID']
+        else:
+            log.value = request.form['value']
         db.session.commit()
         return redirect("/tracker/"+tracker_id+"/log")
     log = Logs.query.filter_by(id=log_id).first()
