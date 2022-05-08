@@ -28,26 +28,22 @@
 </head>
 <body>
     <main class="form-signin">
-	{% if n > 0 %}
 	<table>
 		<tr>
 			<th>Name</th>
             <th>Description</th>
             <th>Actions</th>
         </tr>
-        {% for track in tracker %}
+        {% for tracker in trackers %}
         <tr>
-            {% set tracker_id = track["id"] %}
-        	<td><a href="/tracker/{{ tracker_id }}/log">{{ track["name"] }}</a></td>
-            <td>{{ track["description"] }}</td>
+            {% set tracker_id = tracker["id"] %}
+        	<td><a href="/tracker/{{ tracker_id }}/log">{{ tracker["name"] }}</a></td>
+            <td>{{ tracker["description"] }}</td>
             <td><a href="/tracker/{{ tracker_id }}/update" type="button">Update</a>
             	<a href="/tracker/{{ tracker_id }}/delete" type="button">Delete</a></td>
         </tr>
         {% endfor %}
     </table>
-    {% else %}
-    <p>No Trackers found. Add trackers now!</p>
-    {% endif %}
     <a href="/user/{{ user_id }}/tracker_create" type="button">+ Add Tracker</a>
 </main>
 </body>

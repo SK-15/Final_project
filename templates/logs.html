@@ -27,6 +27,7 @@
     <link type=text/css href="{{ url_for('static',filename='css/signin.css') }}" rel="stylesheet">
 </head>
 <body>
+    
     <main class="form-signin">
 	{% if n > 0 %}
 	<table>
@@ -55,10 +56,12 @@
         <img src='/static/images/plot.png' />
     </div>
     {% endif %}
+    {% set userid = logs[0]["user_id"] %}
+    {% set trackerid = logs[0]["tracker_id"] %}
     <div>
-        <a href="/tracker/{{ tracker_id }}/log_create" type="button">+ Add Log</a>
+        <a href="/tracker/{{ trackerid }}/log_create" type="button">+ Add Log</a>
     </div>
-    <a href="/user/{{ user_id }}/tracker" type="button">User Trackers</a>
+    <a href="/user/{{ userid }}/tracker" type="button">User Trackers</a>
 </main>
 </body>
 </html>
