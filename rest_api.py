@@ -4,6 +4,7 @@ from validation import BusinessValidationError, NotFoundError
 from model import *
 from flask import jsonify
 from plotify import logs_plot
+import time
 
 api = Api()
 
@@ -11,11 +12,18 @@ user_parser = reqparse.RequestParser()
 user_parser.add_argument('name',type=str)
 user_parser.add_argument('email',type=str)
 
-add_tracker_parser = reqparse.RequestParser()
-add_tracker_parser.add_argument('name')
-add_tracker_parser.add_argument('description')
-add_tracker_parser.add_argument('type')
-add_tracker_parser.add_argument('values')
+tracker_parser = reqparse.RequestParser()
+tracker_parser.add_argument('name')
+tracker_parser.add_argument('description')
+tracker_parser.add_argument('type')
+tracker_parser.add_argument('values')
+
+log_parser = reqparse.RequestParser()
+log_parser.add_argument('note')
+log_parser.add_argument('value')
+
+add_log_parser = reqparse.RequestParser()
+add_log_parser.add_argument('log_list')
 
 
 
@@ -80,20 +88,20 @@ class TrackerAPI(Resource):
         return jsonify([Tracker.serialize(tracker) for tracker in trackers])
 
     def post(self,userid):
-        args = add_tracker_parser.parse_args()
-        name = args.get("name",None)
-        description = args.get("description",None)
-        type = args.get("type",None)
-        values = args.get("values",None)
+        args = tracker_parser.parse_args()
+        name = args["name"]
+        description = args["description"]
+        type = args["type"]
+        values = args["values"]
         new_tracker = Tracker(name=name,value_types=values,type=type,description=description,user_id=userid)
         db.session.add(new_tracker)
         db.session.commit()
         return None, 200
 
     def put(self,trackerid):
-        args = add_tracker_parser.parse_args()
-        name = args.get("name",None)
-        description = args.get("description",None)
+        args = tracker_parser.parse_args()
+        name = args["name"]
+        description = args["description"]
         tracker = Tracker.query.filter_by(id=trackerid).first()
         tracker.name = name
         tracker.description = description
@@ -109,24 +117,56 @@ class TrackerAPI(Resource):
         
 
 class LogsAPI(Resource):        
-    def get(self,trackerid):
-        logs = Logs.query.filter_by(tracker_id=trackerid).all()
-        tracker = Tracker.query.filter_by(id=trackerid).first()
-        logs_plot(tracker.type, logs)
-        return jsonify([Logs.serialize(log) for log in logs])
+    def get(self,id):
+        args = add_log_parser.parse_args()
+        rtrn_type = args['log_list']
+        #return { 'value' : rtrn_type}
+        if rtrn_type == "0":
+            logs = Logs.query.filter_by(tracker_id=id).all()
+            tracker = Tracker.query.filter_by(id=id).first()
+            logs_plot(tracker.type, logs)
+            return jsonify([Logs.serialize(log) for log in logs])
+        if rtrn_type == "1":
+            tracker = Tracker.query.filter_by(id=id).first()
+            return jsonify(Tracker.serialize(tracker))
+        if rtrn_type == "2":
+            log = Logs.query.filter_by(id=id).first()
+            return jsonify(Logs.serialize(log))
 
-    def post(self,trackerid):
-        pass
 
-    def put(self,logid):
-        pass
+    def post(self,id):
+        tracker = Tracker.query.filter_by(id=id).first()
+        args = log_parser.parse_args()
+        note = args['note']
+        value = args['value']
+        time_stamp = time.ctime()
+        new_log = Logs(tracker_id=id,user_id=tracker.user_id,value=value,time_stamp=time_stamp,note=note,type=tracker.type)
+        db.session.add(new_log)
+        db.session.commit()
+        return None, 200
 
-    def delete():
-        pass
+    def put(self,id):
+        args = log_parser.parse_args()
+        note = args['note']
+        value = args['value']
+        time_stamp = time.ctime()
+        log = Logs.query.filter_by(id=id).first()
+        log.note = note
+        log.value = value
+        log.time_stamp = time_stamp
+        db.session.commit()
+        return {'trackerid':log.tracker_id}, 200
+
+    def delete(self,id):
+        log = Logs.query.filter_by(id=id).first()
+        tracker_id = log.tracker_id
+        db.session.delete(log)
+        db.session.commit()
+        return {'trackerid':tracker_id}, 200
 
 
 
 
 api.add_resource(UserAPI, "/api/user")
 api.add_resource(TrackerAPI, "/api/tracker/<string:userid>","/api/tracker/<string:trackerid>")
-api.add_resource(LogsAPI, "/api/logs/<string:trackerid>","/api/logs/<string:logid>")
+api.add_resource(LogsAPI, "/api/logs/<string:id>")

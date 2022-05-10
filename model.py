@@ -45,6 +45,7 @@ class Logs(db.Model):
     value = db.Column(db.String)
     time_stamp = db.Column(db.Integer)
     note = db.Column(db.String)
+    type = db.Column(db.String)
 
     def serialize(self):
         return {
@@ -54,4 +55,5 @@ class Logs(db.Model):
             'value' : self.value,
             'time_stamp' : self.time_stamp,
             'note' : self.note,
+            'type' : self.type
         }
