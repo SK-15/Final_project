@@ -29,11 +29,23 @@
 <body>
 	<main class="form-signin">
 	<h1>Add Log</h1>
-	<form action="/tracker/{{ tracker_id }}/log_create" method="POST" id="create-form">
+	<form action="/{{ user_id }}/{{ tracker_id }}/log_create" method="POST" id="create-form">
+  {% if tracker["type"] == "0" %}
 		<div>
 			<label>Value</label>
-            <input type="text" name="value" required />
-        </div>
+            <input type="text" name="log_value" required />
+    </div>
+  {% else %}
+    <div>
+    <label>Value</label>
+          {% for value in values %}
+          <tr>
+            <input type="radio" name="log_value" value="{{ value }}" />
+              <label>{{ value }}</label>
+          </tr>
+          {% endfor %}
+    </div>
+  {% endif %}
 
         <div>
         	<label>Notes</label>
@@ -43,6 +55,7 @@
         	<input type="submit" value = "Submit">
         </div>
     </form>
+
 </main>
 </body>
 </html>

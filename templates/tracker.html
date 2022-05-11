@@ -37,7 +37,7 @@
         {% for tracker in trackers %}
         <tr>
             {% set tracker_id = tracker["id"] %}
-        	<td><a href="/tracker/{{ tracker_id }}/log">{{ tracker["name"] }}</a></td>
+        	<td><a href="/{{ user_id }}/{{ tracker_id }}/log">{{ tracker["name"] }}</a></td>
             <td>{{ tracker["description"] }}</td>
             <td><a href="/tracker/{{ tracker_id }}/update" type="button">Update</a>
             	<a href="/tracker/{{ tracker_id }}/delete" type="button">Delete</a></td>

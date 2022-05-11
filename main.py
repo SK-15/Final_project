@@ -2,6 +2,8 @@ from flask import Flask, render_template, jsonify
 from flask import request, redirect, session
 import os
 import time
+
+from sqlalchemy import null
 from model import db, Tracker
 from plotify import logs_plot
 import requests
@@ -37,7 +39,7 @@ def add_user():
 
 @app.route("/user/<string:user_id>/tracker", methods=["GET", "POST"])
 def tracker_dashboard(user_id):
-    response = requests.get('http://127.0.0.1:5000/api/tracker/'+user_id)
+    response = requests.get('http://127.0.0.1:5000/api/tracker/'+user_id, params={'tracker_list':0})
     response = response.json()
     tracker = []
     for rep in response:
@@ -57,16 +59,15 @@ def tracker_add(user_id):
             t_type = '1'  # 1 for multiple choice type
             value = request.form['value']
         data = {'name':name,'description':description,'type':t_type,'values':value}
-        response = requests.post('http://127.0.0.1:5000/api/tracker'+user_id,data = data)
-        response = response.json()
+        response = requests.post('http://127.0.0.1:5000/api/tracker/'+user_id,params=data)
         return redirect("/user/"+user_id+"/tracker")
     return render_template('add_tracker.html', user_id=user_id)
 
 @app.route("/tracker/<string:tracker_id>/delete",methods=["GET","POST"])
 def tracker_delete(tracker_id):
-    response = requests.delete('http://127.0.0.1:5000/api/tracker'+tracker_id)
+    response = requests.delete('http://127.0.0.1:5000/api/tracker/'+tracker_id)
     response = response.json()
-    user_id = response['user_id']
+    user_id = str(response['user_id'])
     return redirect("/user/"+user_id+"/tracker")
 
 
@@ -76,57 +77,62 @@ def tracker_update(tracker_id):
         name = request.form["name"]
         description = request.form["description"]
         data = {'name':name,'description':description}
-        response = requests.put('http://127.0.0.1:5000/api/tracker'+tracker_id,data = data)
+        response = requests.put('http://127.0.0.1:5000/api/tracker/'+tracker_id,data = data)
         response = response.json()
-        user_id = response['user_id']
+        user_id = str(response['user_id'])
         return redirect("/user/"+user_id+"/tracker")
-    tracker = Tracker.query.filter_by(id=tracker_id).first()
-    return render_template('tracker_update.html', tracker=tracker, tracker_id=tracker_id)
+    response = requests.get('http://127.0.0.1:5000/api/tracker/'+tracker_id, params={'tracker_list':1})
+    response = response.json()
+    return render_template('tracker_update.html', tracker=response, tracker_id=tracker_id)
 
 
-@app.route("/tracker/<string:tracker_id>/log",methods=["GET", "POST"])
-def tracker_logs(tracker_id):
+@app.route("/<string:user_id>/<string:tracker_id>/log",methods=["GET", "POST"])
+def tracker_logs(user_id,tracker_id):
     response = requests.get('http://127.0.0.1:5000/api/logs/'+tracker_id,params = {'log_list':0})
     response = response.json()
     logs = []
     for rep in response:
         logs.append(rep)
-    return render_template("logs.html", logs=logs, n=len(logs))
+    return render_template("logs.html", logs=logs, n=len(logs),user_id = user_id,tracker_id = tracker_id)
 
 
-@app.route("/tracker/<string:tracker_id>/log_create", methods=["GET", "POST"])
-def add_log(tracker_id):
+@app.route("/<string:user_id>/<string:tracker_id>/log_create", methods=["GET","POST"])
+def add_log(user_id,tracker_id):
     if request.method == "POST":
         value = request.form['log_value']
         note = request.form['note']
-        data = {'note ':note,'value':value}
-        response = requests.post('http://127.0.0.1:5000/api/logs/'+tracker_id,data=data)
-        response = response.json()
-        return redirect("/tracker/"+tracker_id+"/log",logs = response)
+        data = {'note' : note, 'value' : value}
+        response = requests.post('http://127.0.0.1:5000/api/logs/'+tracker_id,params=data)
+        return redirect("/"+user_id+"/"+tracker_id+"/log")
     response = requests.get('http://127.0.0.1:5000/api/logs/'+tracker_id,params = {'log_list':1})
     response = response.json()
-    return render_template("add_log.html", tracker = response,tracker_id = tracker_id)
+    values = null
+    if response['type'] == "1":
+        value_types = str(response['value_types'])
+        values = value_types.upper()
+        values = values.split(',')
+    return render_template("add_log.html", tracker = response,user_id = user_id,tracker_id = tracker_id,values = values)
 
-@app.route("/log/<string:log_id>/delete",methods=["GET","POST"])
-def log_delete(log_id):
+@app.route("/<string:user_id>/<string:log_id>/log_delete",methods=["GET","POST"])
+def log_delete(user_id,log_id):
     response = requests.delete('http://127.0.0.1:5000/api/logs/'+log_id)
     response = response.json()
-    tracker_id = response['trackerid']
-    return redirect("/tracker/"+tracker_id+"/log")
+    tracker_id = str(response['trackerid'])
+    return redirect("/"+user_id+"/"+tracker_id+"/log")
 
-@app.route("/log/<string:log_id>/update", methods=["GET", "POST"])
-def log_update(log_id):
+@app.route("/<string:user_id>/<string:log_id>/log_update", methods=["GET", "POST"])
+def log_update(user_id,log_id):
     if request.method == "POST":
         note = request.form['note']
         value = request.form['log_value']
         data = {'note':note, 'value':value}
-        response = requests.put('http://127.0.0.1:5000/api/logs/'+tracker_id,data=data)
+        response = requests.put('http://127.0.0.1:5000/api/logs/'+log_id,data=data)
         response = response.json()
-        tracker_id = response['trackerid']
-        return redirect("/tracker/"+tracker_id+"/log")
+        tracker_id = str(response['trackerid'])
+        return redirect("/"+user_id+"/"+tracker_id+"/log")
     response = requests.get('http://127.0.0.1:5000/api/logs/'+log_id,params = {'log_list':2})
     response = response.json()
-    return render_template('log_update.html',log = response)
+    return render_template('log_update.html',log = response,user_id=user_id)
 
 
 if __name__ == '__main__':

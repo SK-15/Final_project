@@ -28,17 +28,31 @@
 </head>
 <body>
     <main class="form-signin">
+    {% set log_id = log["id"] %}
     {% set log_note = log["note"] %}
-    {% set log_value = log["value"] %}
+    {% set value = log["value"] %}
 	<h1>Add Log</h1>
-	<form action="/log/{{ log_id }}/update" method="POST" id="create-form">
+	<form action="/{{ user_id }}/{{ log_id }}/log_update" method="POST" id="create-form">
+    {% if log['type'] == "0" %}
 		<div>
 			<label>Value</label>
-            <input type="text" name="value" value="{{ log_value }}" required />
+            <input type="text" name="log_value" value="{{ value }}" required />
         </div>
 
         <div>
-        	<label>Notes</label>
+    {% else %}
+    <div>
+      <label>Value</label>
+            {% for value in values %}
+            <tr>
+              <input type="radio" name="log_value" value="{{ value }}" />
+                <label>{{ value }}</label>
+            </tr>
+            {% endfor %}
+    </div>
+    {% endif %}
+      <label>Notes</label>
+        <div>
             <input type="text" name="note" value="{{ log_note }}" required />
         </div>
         <div>

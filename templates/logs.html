@@ -43,8 +43,8 @@
         	<td>{{ log["value"] }}</td>
             <td>{{ log["note"] }}</td>
             <td>{{ log["time_stamp"]  }}</td>
-            <td><a href="/log/{{ log_id  }}/update" type="button">Update</a>
-            	<a href="/log/{{ log_id  }}/delete" type="button">Delete</a></td>
+            <td><a href="/{{ user_id }}/{{ log_id  }}/log_update" type="button">Update</a>
+            	<a href="/{{ user_id }}/{{ log_id  }}/log_delete" type="button">Delete</a></td>
         </tr>
         {% endfor %}
     </table>
@@ -56,12 +56,10 @@
         <img src='/static/images/plot.png' />
     </div>
     {% endif %}
-    {% set userid = logs[0]["user_id"] %}
-    {% set trackerid = logs[0]["tracker_id"] %}
     <div>
-        <a href="/tracker/{{ trackerid }}/log_create" type="button">+ Add Log</a>
+        <a href="/{{ user_id }}/{{ tracker_id }}/log_create" type="button">+ Add Log</a>
     </div>
-    <a href="/user/{{ userid }}/tracker" type="button">User Trackers</a>
+    <a href="/user/{{ user_id }}/tracker" type="button">User Trackers</a>
 </main>
 </body>
 </html>
