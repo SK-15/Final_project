@@ -7,8 +7,8 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
 	<title>Your Trackers</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">
-    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/list-groups/">
+    <link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -23,28 +23,83 @@
           font-size: 3.5rem;
         }
       }
+
+      body {
+        height: 100%;
+        background-color: black;
+           }
+
+      body {
+        display: flex;
+        align-items: center;
+        padding-top: 5px;
+        padding-bottom: 20px;
+        background-color: lightcyan;
+            }
+      main {
+        width: 300%;
+        max-width: 800px;
+        padding: 15px;
+        margin: auto;
+      }
     </style>
-    <link type=text/css href="{{ url_for('static',filename='css/signin.css') }}" rel="stylesheet">
+    <link type=text/css href="{{ url_for('static',filename='css/list-groups.css') }}" rel="stylesheet">
+    <link type=text/css href="{{ url_for('static',filename='css/headers.css') }}" rel="stylesheet">
 </head>
 <body>
-    <main class="form-signin">
-	<table>
-		<tr>
-			<th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
+  <div>
+    <div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">Simple header</span>
+      </a>
+
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+      </ul>
+    </header>
+   </div>
+
+    <div class="row">
+    <main>
+    <div class="list-group">
+    </div class="list-group">
         {% for tracker in trackers %}
-        <tr>
-            {% set tracker_id = tracker["id"] %}
-        	<td><a href="/{{ user_id }}/{{ tracker_id }}/log">{{ tracker["name"] }}</a></td>
-            <td>{{ tracker["description"] }}</td>
-            <td><a href="/tracker/{{ tracker_id }}/update" type="button">Update</a>
-            	<a href="/tracker/{{ tracker_id }}/delete" type="button">Delete</a></td>
-        </tr>
+        {% set tracker_id = tracker["id"] %}
+        <a href=></a>
+
+          <a href="/{{ user_id }}/{{ tracker_id }}/log" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0">{{ tracker["name"] }}</h6>
+                <p class="mb-0 opacity-75">{{ tracker["description"] }}</p>
+              </div>
+              <small class="opacity-50 text-nowrap"></small>
+            </div>
+          </a>
+          <a href="/tracker/{{ tracker_id }}/update">Update</a>
+          <a href="/tracker/{{ tracker_id }}/delete">Delete</a>
         {% endfor %}
-    </table>
-    <a href="/user/{{ user_id }}/tracker_create" type="button">+ Add Tracker</a>
+     <a href="/user/{{ user_id }}/tracker_create" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h6 class="mb-0">+ Add Tracker</h6>
+                <p class="mb-0 opacity-75"></p>
+              </div>
+              <small class="opacity-50 text-nowrap"></small>
+            </div>
+          </a>
+      </div>
+    </main>
+  </div>
+</div>
 </main>
 </body>
 </html>
+
+

@@ -1,11 +1,8 @@
 from flask import Flask, render_template, jsonify
 from flask import request, redirect, session
 import os
-import time
-
 from sqlalchemy import null
-from model import db, Tracker
-from plotify import logs_plot
+from model import db
 import requests
 from rest_api import api
 
@@ -22,7 +19,10 @@ def login_dashboard():
         data = { 'name' : request.form['name'], 'email' : request.form['email'] }
         response = requests.get('http://127.0.0.1:5000/api/user',params = data)
         response = response.json()
-        userid = response['id']
+        try:
+            userid = response['id']
+        except KeyError:
+            return render_template('error.html',message = response)
         return redirect("/user/"+userid+"/tracker")
     return render_template('index.html')
 

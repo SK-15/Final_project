@@ -54,7 +54,7 @@ class UserAPI(Resource):
         email = args["email"]
         user = User.query.filter_by(email=email).first()
         if user is None:
-            raise NotFoundError(status_code=404)
+            raise NotFoundError(status_code=404, error_code="NT1001",error_message="username is required")
         if user.name != name:
             raise BusinessValidationError(status_code=400, error_code="BE1005", error_message="Username does not match email")
         return user
@@ -63,8 +63,8 @@ class UserAPI(Resource):
     @marshal_with(resource_fields)
     def post(self):
         args = user_parser.parse_args()
-        username = args.get("username", None)
-        email = args.get("email", None)
+        username = args['name']
+        email = args['name']
 
         if username is None:
             raise BusinessValidationError(status_code=400, error_code="BE1001", error_message="username is required")
@@ -130,7 +130,6 @@ class LogsAPI(Resource):
     def get(self,id):
         args = add_log_parser.parse_args()
         rtrn_type = args['log_list']
-        #return { 'value' : rtrn_type}
         if rtrn_type == "0":
             logs = Logs.query.filter_by(tracker_id=id).all()
             tracker = Tracker.query.filter_by(id=id).first()
