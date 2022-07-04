@@ -31,16 +31,12 @@
 
       body {
         display: flex;
-        align-items: center;
         padding-top: 5px;
         padding-bottom: 20px;
         background-color: lightcyan;
             }
       main {
-        width: 300%;
-        max-width: 800px;
-        padding: 15px;
-        margin: auto;
+        align-items: center;
       }
     </style>
     <link type=text/css href="{{ url_for('static',filename='css/list-groups.css') }}" rel="stylesheet">
@@ -52,7 +48,7 @@
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
         <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-        <span class="fs-4">Simple header</span>
+        <span class="fs-4">Quantified Self</span>
       </a>
 
       <ul class="nav nav-pills">
@@ -82,8 +78,8 @@
               <small class="opacity-50 text-nowrap"></small>
             </div>
           </a>
-          <a href="/tracker/{{ tracker_id }}/update">Update</a>
-          <a href="/tracker/{{ tracker_id }}/delete">Delete</a>
+          <a href="/tracker/{{ tracker_id }}/update"><button class="btn btn-primary" >Update</button></a>
+          <a href="/tracker/{{ tracker_id }}/delete"><button class="btn btn-primary" >Delete</button></a>
         {% endfor %}
      <a href="/user/{{ user_id }}/tracker_create" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
             <div class="d-flex gap-2 w-100 justify-content-between">

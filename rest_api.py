@@ -56,7 +56,7 @@ class UserAPI(Resource):
         if user is None:
             raise NotFoundError(status_code=404, error_code="NT1001",error_message="username is required")
         if user.name != name:
-            raise BusinessValidationError(status_code=400, error_code="BE1005", error_message="Username does not match email")
+            raise BusinessValidationError(status_code=400, error_code="BE1001", error_message="Username does not match email")
         return user
      
 
@@ -67,19 +67,19 @@ class UserAPI(Resource):
         email = args['name']
 
         if username is None:
-            raise BusinessValidationError(status_code=400, error_code="BE1001", error_message="username is required")
+            raise BusinessValidationError(status_code=400, error_code="BE1002", error_message="username is required")
 
         if email is None:
-            raise BusinessValidationError(status_code=400, error_code="BE1002", error_message="email is required")
+            raise BusinessValidationError(status_code=400, error_code="BE1003", error_message="email is required")
 
         if "@" in email:
             pass
         else:
-            raise BusinessValidationError(status_code=400, error_code="BE1003", error_message="Invalid email")
+            raise BusinessValidationError(status_code=400, error_code="BE1004", error_message="Invalid email")
 
         user = db.session.query(User).filter((User.username == username) | (User.email == email)).first()
         if user:
-            raise BusinessValidationError(status_code=400, error_code="BE1004", error_message="Duplicate user")            
+            raise BusinessValidationError(status_code=400, error_code="BE1005", error_message="Duplicate user")            
 
         new_user = User(username=username, email=email)
         db.session.add(new_user)
@@ -120,6 +120,9 @@ class TrackerAPI(Resource):
 
     def delete(self,id):
         tracker = Tracker.query.filter_by(id=id).first()
+        log = Logs.query.filter_by(tracker_id=id).first()
+        if log:
+            raise BusinessValidationError(status_code=400, error_code="BE1006", error_message="Logs are present please delete all the logs for this tracker")
         user_id = tracker.user_id
         db.session.delete(tracker)
         db.session.commit()
