@@ -1,0 +1,5 @@
+# ignoring environment folder
+myenv
+__pycache__
+.idea
+

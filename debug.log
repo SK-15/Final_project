@@ -1,0 +1,21 @@
+2022-08-21 17:06:16,565 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
+2022-08-21 17:06:16,577 INFO werkzeug MainThread :  * Restarting with stat
+2022-08-21 17:06:20,977 WARNING werkzeug MainThread :  * Debugger is active!
+2022-08-21 17:06:20,997 INFO werkzeug MainThread :  * Debugger PIN: 993-295-779
+2022-08-21 17:07:13,685 INFO werkzeug Thread-2 : 127.0.0.1 - - [21/Aug/2022 17:07:13] "GET / HTTP/1.1" 200 -
+2022-08-21 17:07:13,857 INFO werkzeug Thread-4 : 127.0.0.1 - - [21/Aug/2022 17:07:13] "GET /static/css/signin.css HTTP/1.1" 200 -
+2022-08-21 17:07:13,862 INFO werkzeug Thread-3 : 127.0.0.1 - - [21/Aug/2022 17:07:13] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 -
+2022-08-21 17:07:14,065 INFO werkzeug Thread-5 : 127.0.0.1 - - [21/Aug/2022 17:07:14] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2022-08-21 17:07:23,618 DEBUG urllib3.connectionpool Thread-6 : Starting new HTTP connection (1): 127.0.0.1:5000
+2022-08-21 17:07:23,626 INFO werkzeug Thread-7 : 127.0.0.1 - - [21/Aug/2022 17:07:23] "[31m[1mGET /api/user?name=kumar&email=sauravkumar%40gmail.com HTTP/1.1[0m" 400 -
+2022-08-21 17:07:23,628 DEBUG urllib3.connectionpool Thread-6 : http://127.0.0.1:5000 "GET /api/user?name=kumar&email=sauravkumar%40gmail.com HTTP/1.1" 400 56
+2022-08-21 17:07:23,654 INFO werkzeug Thread-6 : 127.0.0.1 - - [21/Aug/2022 17:07:23] "POST / HTTP/1.1" 200 -
+2022-08-21 17:07:23,711 INFO werkzeug Thread-9 : 127.0.0.1 - - [21/Aug/2022 17:07:23] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2022-08-21 17:07:23,718 INFO werkzeug Thread-8 : 127.0.0.1 - - [21/Aug/2022 17:07:23] "GET /static/css/headers.css HTTP/1.1" 200 -
+2022-08-21 17:07:31,297 INFO werkzeug Thread-10 : 127.0.0.1 - - [21/Aug/2022 17:07:31] "GET / HTTP/1.1" 200 -
+2022-08-21 17:25:19,578 DEBUG urllib3.connectionpool Thread-11 : Starting new HTTP connection (1): 127.0.0.1:5000
+2022-08-21 17:25:19,586 INFO werkzeug Thread-12 : 127.0.0.1 - - [21/Aug/2022 17:25:19] "[31m[1mGET /api/user?name=kumar&email=sauravkumar%40gmail.com HTTP/1.1[0m" 400 -
+2022-08-21 17:25:19,587 DEBUG urllib3.connectionpool Thread-11 : http://127.0.0.1:5000 "GET /api/user?name=kumar&email=sauravkumar%40gmail.com HTTP/1.1" 400 56
+2022-08-21 17:25:19,590 INFO werkzeug Thread-11 : 127.0.0.1 - - [21/Aug/2022 17:25:19] "POST / HTTP/1.1" 200 -
+2022-08-21 17:25:19,642 INFO werkzeug Thread-13 : 127.0.0.1 - - [21/Aug/2022 17:25:19] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2022-08-21 17:25:19,647 INFO werkzeug Thread-14 : 127.0.0.1 - - [21/Aug/2022 17:25:19] "[36mGET /static/css/headers.css HTTP/1.1[0m" 304 -

@@ -1,12 +1,13 @@
 from flask_restful import Resource, Api, reqparse
 from flask_restful import fields, marshal_with
-from validation import BusinessValidationError, NotFoundError
-from model import *
+from applications.validation import BusinessValidationError, NotFoundError,SchemaValidationError
+from applications.model import User, Tracker, Logs
+from applications.database import db
+from flask import current_app as app
 from flask import jsonify
-from plotify import logs_plot
+from applications.plotify import logs_plot
 import time
-
-api = Api()
+import werkzeug
 
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('name',type=str)
@@ -179,6 +180,4 @@ class LogsAPI(Resource):
 
 
 
-api.add_resource(UserAPI, "/api/user")
-api.add_resource(TrackerAPI, "/api/tracker/<string:id>")
-api.add_resource(LogsAPI, "/api/logs/<string:id>")
+
